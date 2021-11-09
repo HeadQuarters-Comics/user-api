@@ -7,6 +7,8 @@ const db  = new Client({
     database: "HQC"
 })
 
+module.exports = db
+
 // --------- Simple Connection
 
 //db.connect()
@@ -32,4 +34,23 @@ async function getUsers() {
     }
 }
 
-getUsers()
+async function createUsers(id, username, password) {
+    try{
+        console.log("Starting connection...")
+        await db.connect()
+        console.log("Success to connect!")
+        const result = await (await db.query('insert into users("id_user", "username", "password") values ('+"'"+id+"', '"+username+"', '"+password+"');")).rows
+        console.table(result)
+        console.log("Valor inserido")
+
+    }
+    catch{
+        console.log("Error to getUsers! Erro" + ex)
+    }
+    finally{
+        await db.end()
+        console.log("Finish connection to db")
+    }
+}
+
+createUsers(1, "teste", "testesenha")
