@@ -25,7 +25,7 @@ module.exports = {
         if(user.length <= 0) {
             data = {id: `user-${crypto.encrypt(username)}`, username, password: crypto.encrypt(password)};
             try{
-                await database.query('insert into users("id_user", "username", "password") values ('+"'"+data.id+"', '"+data.username+"', '"+data.password+"');")
+                await database.query(`insert into users("id_user", "username", "password") values ('${data.id}', '${data.username}', '${data.password}');`)
                 return res.status(200).json(data)
             }
             catch(error){

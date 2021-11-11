@@ -9,13 +9,13 @@ const crypto_params = {
 module.exports = {    
     encrypt(senha) {
         const cipher = crypto.createCipher(crypto_params.algorithm, crypto_params.secret);
-        cipher.update(senha);
+        cipher.update(String(senha));
         return cipher.final(crypto_params.type);
     },
 
     idGenerate(param) {
         const cipher = crypto.createCipher("aes-128", crypto_params.secret);
-        cipher.update(param);
+        cipher.update(String(param));
         return cipher.final(crypto_params.type);
     }
 }
