@@ -1,11 +1,13 @@
 const database = require('../../db')
+const crypto = require('../services/crypto')
 
 module.exports = {
-    async index() {
+    async index(req, res) {
         try{
             await database.connect()
             const result = await (await db.query("select * from users")).rows
             console.table(result)
+            return res.status(200).json(result)
         }
         catch(error){
             console.log(`Error to get all users! ${error}`)
@@ -13,7 +15,7 @@ module.exports = {
     },
     
     async create(req, res) {
-        const {id, username, password} = req.body;
+        const {username, password} = req.body;
 
         let data = {};
 
@@ -21,8 +23,8 @@ module.exports = {
 
         let user = await(await database.query(`select username, password from users where username = '${username}'`)).rows
         console.log(user.length)
-        if(user.length > 0) {
-            data = {id, username, password};
+        if(user.length <= 0) {
+            data = {id: `user-${crypto.encrypt(username)}`, username, password: crypto.encrypt(password)};
             try{
                 await database.query('insert into users("id_user", "username", "password") values ('+"'"+data.id+"', '"+data.username+"', '"+data.password+"');")
                 return res.status(200).json(data)
