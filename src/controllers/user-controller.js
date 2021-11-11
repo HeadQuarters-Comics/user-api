@@ -5,7 +5,7 @@ module.exports = {
     async index(req, res) {
         try{
             await database.connect()
-            const result = await (await db.query("select * from users")).rows
+            const result = await (await database.query("select * from users")).rows
             console.table(result)
             return res.status(200).json(result)
         }
