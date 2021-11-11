@@ -1,3 +1,5 @@
+const { verify } = require('crypto')
+const { realpathSync } = require('fs')
 const database = require('../../db')
 const crypto = require('../services/crypto')
 
@@ -22,7 +24,6 @@ module.exports = {
         await database.connect()
 
         let user = await(await database.query(`select username, password from users where username = '${username}'`)).rows
-        console.log(user.length)
         if(user.length <= 0) {
             data = {id: `user-${crypto.encrypt(username)}`, username, password: crypto.encrypt(password)};
             try{
@@ -38,18 +39,21 @@ module.exports = {
         }
     },
 
-    async get(req, res) {
-        const {username} = req.params
-        console.log(req)
-        try{
-            await database.connect()
-            const result = await(await database.query(`select username, password from users where username = '${username}'`)).rows
-            console.table(result)
-            return res.status(200).json(result)
-        }
-        catch(error){
-            console.log(`Error to get all users! ${error}`)
-            return res.status(500)
+    async verify(req, res) {
+        const {username, password} = req.body
+
+        await database.connect()
+
+        let user = await(await database.query(`select username, password from users where username = '${username}'`)).rows
+
+        if(user.length > 0) {
+            if(user[0].password == crypto.encrypt(password)) {
+                return res.status(200).json()
+            }else {
+                return res.status(403).json("Incorrect password")
+            }
+        }else {
+            return res.status(404).json(`That user doesn't exist`)
         }
     },
 
