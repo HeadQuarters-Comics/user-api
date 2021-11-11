@@ -1,5 +1,3 @@
-const { verify } = require('crypto')
-const { realpathSync } = require('fs')
 const database = require('../../db')
 const crypto = require('../services/crypto')
 
