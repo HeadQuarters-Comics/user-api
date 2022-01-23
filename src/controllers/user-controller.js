@@ -4,7 +4,7 @@ const crypto = require('../services/crypto')
 module.exports = {
     async index(req, res) {
         try{
-            await database.connect()
+            //await database.connect()
             const result = await (await database.query("select * from users")).rows
             console.table(result)
             return res.status(200).json(result)
@@ -19,7 +19,7 @@ module.exports = {
 
         let data = {};
 
-        await database.connect()
+        //await database.connect()
 
         let user = await(await database.query(`select username, password from users where username = '${username}'`)).rows
         if(user.length <= 0) {
@@ -40,7 +40,7 @@ module.exports = {
     async verify(req, res) {
         const {username, password} = req.body
 
-        await database.connect()
+        //await database.connect()
 
         let user = await(await database.query(`select username, password from users where username = '${username}'`)).rows
 
